@@ -33,6 +33,8 @@ extern "C" {
 /* USER CODE BEGIN Includes */
 void SystemClock_Config(void);
 static void MPU_Config(void);
+void UDP_Receive_Init(void);
+
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/

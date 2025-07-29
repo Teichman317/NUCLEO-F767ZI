@@ -18,19 +18,20 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
-#include "eth.h"
+#include "lwip.h"
+#include "usart.h"
+#include "gpio.h"
+
+/* Private includes ----------------------------------------------------------*/
+/* USER CODE BEGIN Includes */
+#include "lwip/udp.h"
 #include "usart.h"
 #include "gpio.h"
 #include "retarget.h"
-#include "usart.h"
 #include "stdio.h"
 #include <stdint.h>
 #include "Drum100sDigit28X567.h"
 #include "AAU19_480X480.h"
-
-/* Private includes ----------------------------------------------------------*/
-/* USER CODE BEGIN Includes */
-
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -107,13 +108,11 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
-  //MX_ETH_Init();
   MX_USART3_UART_Init();
+  MX_LWIP_Init();
+  UDP_Receive_Init();
+
   /* USER CODE BEGIN 2 */
-  void Error_Handler(void) {
-      HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_7); // Fast blink LD2
-      while (1) { HAL_Delay(100); }
-  }
 
   /* USER CODE END 2 */
 
@@ -137,6 +136,37 @@ int main(void)
   * @brief System Clock Configuration
   * @retval None
   */
+static struct udp_pcb *udp_pcb_rx;
+
+static void udp_receive_callback(void *arg, struct udp_pcb *pcb, struct pbuf *p,
+                                 const ip_addr_t *addr, u16_t port)
+{
+  if (p != NULL) {
+    printf("UDP packet from %s:%d\r\n", ipaddr_ntoa(addr), port);
+    printf("Payload: %.*s\r\n", p->len, (char *)p->payload);
+    pbuf_free(p);
+  }
+}
+
+void UDP_Receive_Init(void)
+{
+  udp_pcb_rx = udp_new();
+  if (udp_pcb_rx == NULL) {
+    printf("Failed to create UDP PCB\r\n");
+    return;
+  }
+
+  err_t err = udp_bind(udp_pcb_rx, IP_ADDR_ANY, 1234); // Use any port you like
+  if (err != ERR_OK) {
+    printf("UDP bind failed: %d\r\n", err);
+    return;
+  }
+
+  udp_recv(udp_pcb_rx, udp_receive_callback, NULL);
+  printf("UDP listener active on port 1234\r\n");
+}
+
+
 void SystemClock_Config(void)
 {
   RCC_OscInitTypeDef RCC_OscInitStruct = {0};
