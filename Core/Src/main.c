@@ -26,6 +26,7 @@
 #include "stdio.h"
 #include <stdint.h>
 #include "Drum100sDigit28X567.h"
+#include "AAU19_480X480.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -34,8 +35,9 @@
 
 /* Private typedef -----------------------------------------------------------*/
 /* USER CODE BEGIN PTD */
-extern UART_HandleTypeDef huart2;
+extern UART_HandleTypeDef huart3;
 extern const uint16_t Drum100sDigit28X57[Drum100s_IMAGE_WIDTH * Drum100s_IMAGE_HEIGHT];
+extern const uint16_t AAU19_480X480[AAU19_IMAGE_WIDTH * AAU19_IMAGE_HEIGHT];
 
 
 /* USER CODE END PTD */
@@ -106,7 +108,7 @@ int main(void)
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   //MX_ETH_Init();
-  MX_USART2_UART_Init();
+  MX_USART3_UART_Init();
   /* USER CODE BEGIN 2 */
   void Error_Handler(void) {
       HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_7); // Fast blink LD2

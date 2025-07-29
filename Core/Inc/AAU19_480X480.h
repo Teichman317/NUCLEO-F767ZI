@@ -2,12 +2,14 @@
  * AAU19_480X480.h
  *
  *  Created on: Jul 28, 2025
- *      Author: Sim
+ *      Author: Dave Teichman
  */
 
-#ifndef INC_AAU19_480X480_H_
-#define INC_AAU19_480X480_H_
+#include <stdint.h>
 
 
+#define AAU19_IMAGE_WIDTH  480
+#define AAU19_IMAGE_HEIGHT 480
 
-#endif /* INC_AAU19_480X480_H_ */
+// RGB565 image data (generated using Marlin RGB565 Converter)
+extern const uint16_t AAU19_480X480[AAU19_IMAGE_WIDTH * AAU19_IMAGE_HEIGHT];
